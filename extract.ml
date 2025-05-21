@@ -1,8 +1,25 @@
-let imgs = [
-  "recieved/Screenshot 2024-07-04 09.42.02.png",
-    "masks/Screenshot 2024-07-04 09.42.02.png",
-    "masks/Screenshot 2024-07-04 09.42.02.crops";
-]
+
+let check_exists fn =
+  if not (Sys.file_exists fn) then
+    Printf.ksprintf failwith "file %s doesn't exist" fn;
+;;
+
+let imgs =
+  let d = Sys.readdir "masks" in
+  let sep = Filename.dir_sep in
+  Array.fold_left (fun acc fn ->
+    if Filename.check_suffix fn ".png"
+    then begin
+      let name = Filename.chop_suffix fn ".png" in
+      let fn1 = Printf.sprintf "recieved%s%s.png" sep name in
+      let fn2 = Printf.sprintf "masks%s%s.png" sep name in
+      let fn3 = Printf.sprintf "masks%s%s.crops" sep name in
+      List.iter check_exists [fn1; fn2; fn3];
+      (fn1, fn2, fn3) :: acc
+    end
+    else (acc)
+  ) [] d
+;;
 
 let input_line_opt ic =
   try Some (input_line ic)
