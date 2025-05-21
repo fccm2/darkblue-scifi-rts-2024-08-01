@@ -14,8 +14,9 @@ let imgs =
       let fn1 = Printf.sprintf "recieved%s%s.png" sep name in
       let fn2 = Printf.sprintf "masks%s%s.png" sep name in
       let fn3 = Printf.sprintf "masks%s%s.crops" sep name in
+      let fn4 = Printf.sprintf "extracted%s%s" sep name in
       List.iter check_exists [fn1; fn2; fn3];
-      (fn1, fn2, fn3) :: acc
+      (fn1, fn2, fn3, fn4) :: acc
     end
     else (acc)
   ) [] d
@@ -34,6 +35,9 @@ let read_lines fn =
   in
   aux []
 
+let suff i =
+  char_of_int ((int_of_char 'b') + i)
+
 let crop_area s =
   Scanf.sscanf s "[x:%d; y:%d; w:%d; h:%d]" (fun x y w h -> (x, y, w, h))
 
@@ -42,16 +46,16 @@ let apply_mask img mask =
     "convert '%s' '%s' -alpha off -compose CopyOpacity -composite output.png"
     img mask
 
-let crop_cmd (x, y, w, h) =
+let crop_cmd (x, y, w, h) fn i =
   Printf.sprintf
-    "convert output.png -crop %dx%d+%d+%d +repage cropped.png"
-    w h x y
+    "convert output.png -crop %dx%d+%d+%d +repage %s%c.png"
+    w h x y fn (suff i)
 
 let () =
-  List.iter (fun (recieved, mask, crops) ->
+  List.iter (fun (recieved, mask, crops, crop_f) ->
     print_endline (apply_mask recieved mask);
-    List.iter (fun crop ->
-      print_endline (crop_cmd (crop_area crop))
+    List.iteri (fun i crop ->
+      print_endline (crop_cmd (crop_area crop) crop_f i)
     ) (read_lines crops);
   ) imgs;
 ;;
