@@ -48,7 +48,7 @@ let apply_mask img mask =
 
 let crop_cmd (x, y, w, h) fn i =
   Printf.sprintf
-    "convert output.png -crop %dx%d+%d+%d +repage %s%c.png"
+    "convert output.png -crop %dx%d+%d+%d +repage '%s%c.png'"
     w h x y fn (suff i)
 
 let () =
