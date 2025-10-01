@@ -1,0 +1,7 @@
+To the extent permitted by law, and to the extent permitted by the terms of use
+of "CreArt", you can use, study, modify, and redistribute the graphics provided
+in this repository.
+
+To the extent permitted by law, you can use, study, modify and redistribute the
+pieces of software provided in this repository following any spdx license,
+and/or any license approuved by the fsf.
